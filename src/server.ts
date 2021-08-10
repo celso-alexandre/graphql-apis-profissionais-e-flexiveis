@@ -1,5 +1,20 @@
 import { ApolloServer, gql } from 'apollo-server';
 
+const usuarios = [
+  {
+    id: 1,
+    nome: 'Celso Alexandre',
+    email: 'celso@celso.com',
+    idade: 27,
+  },
+  {
+    id: 2,
+    nome: 'Celso Alexandre 2',
+    email: 'celso2@celso.com',
+    idade: 28,
+  },
+];
+
 const typeDefs = gql`
   scalar Date
 
@@ -13,10 +28,10 @@ const typeDefs = gql`
   }
 
   type Produto {
-    nome: String
-    preco: Float
+    nome: String!
+    preco: Float!
     desconto: Float
-    precoComDesconto: Float
+    precoComDesconto: Float    
   }
 
   #Pontos de entrada da API
@@ -25,12 +40,15 @@ const typeDefs = gql`
     whatTimeItIs: Date!
     usuarioLogado: Usuario
     produtoEmDestaque: Produto
+    numerosMegaSena: [Int!]!
+    usuarios: [Usuario]
   }
 `;
 
 const resolvers = {
   Produto: {
-    precoComDesconto(parent) {
+    precoComDesconto(parent: any) {
+      if (!parent.desconto) return parent.preco;
       return parent.preco * (1 - parent.desconto);
     },
   },
@@ -57,6 +75,18 @@ const resolvers = {
         preco: 5,
         desconto: 0.05,
       };
+    },
+    numerosMegaSena() {
+      function sortear() {
+        return Math.round(Math.random() * 100);
+      }
+      return Array(6)
+        .fill(0)
+        .map(() => sortear())
+        .sort((a, b) => a - b);
+    },
+    usuarios() {
+      return usuarios;
     },
   },
 };
