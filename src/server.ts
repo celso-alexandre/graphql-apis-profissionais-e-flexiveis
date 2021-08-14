@@ -19,9 +19,9 @@ const typeDefs = gql`
   scalar Date
 
   type Usuario {
-    id: ID
-    nome: String!
-    email: String!
+    id: Int
+    nome: String
+    email: String
     idade: Int
     salario: Float
     vip: Boolean
@@ -42,6 +42,7 @@ const typeDefs = gql`
     produtoEmDestaque: Produto
     numerosMegaSena: [Int!]!
     usuarios: [Usuario]
+    usuario(id: Int!): Usuario
   }
 `;
 
@@ -87,6 +88,11 @@ const resolvers = {
     },
     usuarios() {
       return usuarios;
+    },
+    usuario(_, { id }) {
+      const usuarioEncontrado = usuarios.find((usuario) => usuario.id === id);
+      console.log({ usuarioEncontrado });
+      return usuarioEncontrado;
     },
   },
 };
